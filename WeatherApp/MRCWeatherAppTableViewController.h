@@ -10,8 +10,10 @@
 #import "MRCCurrentCell.h"
 #import "MRCForecastCell.h"
 #import "MBProgressHUD.h"
+@import CoreLocation;
 
-@interface MRCWeatherAppTableViewController : UITableViewController <NSURLConnectionDelegate, MBProgressHUDDelegate> {
+@interface MRCWeatherAppTableViewController : UITableViewController <NSURLConnectionDelegate, MBProgressHUDDelegate, CLLocationManagerDelegate>
+{
 	MBProgressHUD *HUD;
     
 	long long expectedLength;
@@ -25,5 +27,9 @@
 @property (nonatomic, strong) NSMutableArray* forecastCellStrings;
 @property (nonatomic, strong) NSString* currentTempString;
 @property (nonatomic, strong) NSString* currentCityString;
+
+@property (nonatomic, strong, readwrite) CLLocation *currentLocation;
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, assign) BOOL isFirstUpdate;
 
 @end

@@ -14,21 +14,22 @@
 
 @implementation MRCWeatherAppTableViewController
 
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-    }
-    return self;
-}
+//- (id)initWithStyle:(UITableViewStyle)style
+//{
+//    self = [super initWithStyle:style];
+//    if (self) {
+//        // Custom initialization
+//
+//    }
+//    return self;
+//}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [self requestTodayData];
-
+    [self findCurrentLocation];
+    
     self.tableView.separatorColor = [self grayDarkest];
     
     // Uncomment the following line to preserve selection between presentations.
@@ -60,7 +61,7 @@
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     
     NSDate* result = [gregorian dateByAddingComponents:components toDate:inDate options:0];
-    NSLog(@"Clean: %@", result);
+    //NSLog(@"Date: %@", result);
     
     return result;
 }
@@ -82,24 +83,56 @@
     return [NSString stringWithFormat:@"%d°", tempInt ];
 }
 
+- (void) errorHandler:(NSError*)error forArea:(NSString*)area
+{
+    NSLog(@"%@ Error:%@", area, error);
+}
+
+#pragma mark - Core Location
+//+ (instancetype)sharedManager {
+//    static id _sharedManager = nil;
+//    static dispatch_once_t onceToken;
+//    dispatch_once(&onceToken, ^{
+//        _sharedManager = [[self alloc] init];
+//    });
+//    
+//    return _sharedManager;
+//}
+
+- (void)findCurrentLocation {
+    self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.delegate = self;
+    
+    self.isFirstUpdate = YES;
+    [self.locationManager startUpdatingLocation];
+}
 
 #pragma mark - Comm Initiators
 - (void) requestTodayData
 {
-    // Create the request.
-    NSString* url = @"http://api.openweathermap.org/data/2.5/weather?q=Durham,NC&units=imperial";
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
-    
-    // Create url connection and fire request
-    self.todayConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    
-    HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    HUD.dimBackground = YES;
-	HUD.delegate = self;
-
+    // We need la location
+    if ( self.currentLocation )
+    {
+        // Once started, igore subsequent requests (While locationManager shuts down)
+        if ( !self.todayConnection )
+        {
+            // Create the request.
+            CLLocationDegrees lat = self.currentLocation.coordinate.latitude;
+            CLLocationDegrees lon = self.currentLocation.coordinate.longitude;
+            NSString* url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=imperial", lat, lon];
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+            
+            // Create url connection and fire request
+            self.todayConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+            
+            HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            HUD.dimBackground = YES;
+            HUD.delegate = self;
+        }
+    }
 }
 
-- (void) requestForecastDataForLocation:(NSString*) locId
+- (void) requestForecastDataForLocationId:(NSString*) locId
 {
     // Create the request.
     NSString* url = [NSString stringWithFormat:@"http://api.openweathermap.org/data/2.5/forecast/daily?id=%@&units=imperial&cnt=5", locId];
@@ -120,11 +153,11 @@
                               JSONObjectWithData:self.todayData
                               options:kNilOptions
                               error:&error];
-        //NSLog(@"TODAY Json \n %@", json );
+        NSLog(@"TODAY Json \n %@", json );
         
         if ( error )
         {
-            NSLog(@"Error:%@", error);
+            [self errorHandler:error forArea:@"Current Contitions"];
         }
         else
         {
@@ -133,9 +166,9 @@
             NSDictionary* main = [json objectForKey:@"main"];
             NSNumber* currentTemp = [main objectForKey:@"temp"];
             self.currentTempString = [self formatTemperature:currentTemp];
-            NSLog(@"City %@   Main %@  temp %@  id %@", self.currentCityString, main, self.currentTempString, locId );
+            //NSLog(@"City %@   Main %@  temp %@  id %@", self.currentCityString, main, self.currentTempString, locId );
             
-            [self requestForecastDataForLocation:locId];
+            [self requestForecastDataForLocationId:locId];
         }
     }
 }
@@ -154,12 +187,12 @@
         
         if ( error )
         {
-            NSLog(@"Error:%@", error);
+            [self errorHandler:error forArea:@"Forecast"];
         }
         else
         {
             NSArray* list = [json objectForKey:@"list"];
-            NSLog(@"list %@  %d ", list, [list count] );
+            //NSLog(@"list %@  %d ", list, [list count] );
             NSDate* dayOfWeek = [NSDate date];
             self.forecastCellStrings = [[NSMutableArray alloc] init];
             
@@ -170,7 +203,7 @@
                 NSDictionary* temp = [day objectForKey:@"temp"];
                 NSNumber* max = [temp objectForKey:@"max"];
                 NSString* temperature = [self formatTemperature:max];
-                NSLog(@"max %@", temperature );
+                //NSLog(@"max %@", temperature );
                 
                 // Store te results to display in the array
                 NSDictionary* forecast = @{ @"temperature" : temperature, @"day" : [self DayOfWeek:dayOfWeek] };
@@ -184,6 +217,30 @@
 
 
 
+
+#pragma mark - CLLocationManagerDelegate
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    
+    if (self.isFirstUpdate) {
+        self.isFirstUpdate = NO;
+        return;
+    }
+    
+    CLLocation *location = [locations lastObject];
+    
+    if (location.horizontalAccuracy > 0) {
+        self.currentLocation = location;
+        NSLog(@"Current Location Found: %@", location);
+        [self.locationManager stopUpdatingLocation];
+        [self requestTodayData];
+        
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    [self errorHandler:error forArea:@"Location"];
+}
 
 #pragma mark - NSURLConnectionDelegate
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -243,7 +300,7 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // The request has failed for some reason!
     // Check the error var
-    NSLog(@"ERROR: %@", error);
+    [self errorHandler:error forArea:@"Connection"];
     [HUD hide:YES];
 
 }
