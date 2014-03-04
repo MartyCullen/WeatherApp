@@ -9,9 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "MRCCurrentCell.h"
 #import "MRCForecastCell.h"
+#import "MBProgressHUD.h"
 
-@interface MRCWeatherAppTableViewController : UITableViewController <NSURLConnectionDelegate>
-
+@interface MRCWeatherAppTableViewController : UITableViewController <NSURLConnectionDelegate, MBProgressHUDDelegate> {
+	MBProgressHUD *HUD;
+    
+	long long expectedLength;
+	long long currentLength;
+}
 @property (nonatomic, strong) NSURLConnection* todayConnection;
 @property (nonatomic, strong) NSMutableData* todayData;
 @property (nonatomic, strong) NSURLConnection* forecastConnection;

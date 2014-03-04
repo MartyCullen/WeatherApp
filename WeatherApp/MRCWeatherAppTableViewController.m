@@ -76,6 +76,13 @@
 
 }
 
+- (NSString*) formatTemperature:(NSNumber*)tempAsNumber
+{
+    NSInteger tempInt = tempAsNumber.integerValue;
+    return [NSString stringWithFormat:@"%d°", tempInt ];
+}
+
+
 #pragma mark - Comm Initiators
 - (void) requestTodayData
 {
@@ -85,6 +92,11 @@
     
     // Create url connection and fire request
     self.todayConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    
+    HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    HUD.dimBackground = YES;
+	HUD.delegate = self;
+
 }
 
 - (void) requestForecastDataForLocation:(NSString*) locId
@@ -175,10 +187,9 @@
 
 #pragma mark - NSURLConnectionDelegate
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    // A response has been received, this is where we initialize the instance var you created
-    // so that we can append data to it in the didReceiveData method
-    // Furthermore, this method is called each time there is a redirect so reinitializing it
-    // also serves to clear it
+    
+	expectedLength = MAX([response expectedContentLength], 1);
+	currentLength = 0;
     
     if (connection == self.todayConnection )
     {
@@ -188,6 +199,8 @@
     {
         self.forecastData = [[NSMutableData alloc] init];
     }
+    
+    HUD.mode = MBProgressHUDModeDeterminate;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -200,7 +213,8 @@
     {
         [self.forecastData appendData:data];
     }
-
+    currentLength += [data length];
+	HUD.progress = currentLength / (float)expectedLength;
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
@@ -221,6 +235,7 @@
     {
         [self processForecastData];
     }
+	[HUD hide:YES];
 
     
 }
@@ -228,14 +243,11 @@
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // The request has failed for some reason!
     // Check the error var
+    NSLog(@"ERROR: %@", error);
+    [HUD hide:YES];
+
 }
 
-
-- (NSString*) formatTemperature:(NSNumber*)tempAsNumber
-{
-    NSInteger tempInt = tempAsNumber.integerValue;
-    return [NSString stringWithFormat:@"%d°", tempInt ];
-}
 
 #pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -333,55 +345,11 @@
     return 64.0;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+#pragma mark - MBProgressHUDDelegate methods
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+	// Remove HUD from screen when the HUD was hidded
+	[HUD removeFromSuperview];
+	HUD = nil;
 }
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a story board-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-
- */
 
 @end
