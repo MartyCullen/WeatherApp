@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A6163B0718C5883B00C58BC5 /* MRCCurrentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A6163B0618C5883B00C58BC5 /* MRCCurrentCell.m */; };
+		A6163B0818C5883B00C58BC5 /* MRCCurrentCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A6163B0618C5883B00C58BC5 /* MRCCurrentCell.m */; };
+		A6163B0B18C5884E00C58BC5 /* MRCForecastCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A6163B0A18C5884E00C58BC5 /* MRCForecastCell.m */; };
+		A6163B0C18C5884E00C58BC5 /* MRCForecastCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A6163B0A18C5884E00C58BC5 /* MRCForecastCell.m */; };
 		A674937418C4FC7500EE73CA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A674937318C4FC7500EE73CA /* Foundation.framework */; };
 		A674937618C4FC7500EE73CA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A674937518C4FC7500EE73CA /* CoreGraphics.framework */; };
 		A674937818C4FC7500EE73CA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A674937718C4FC7500EE73CA /* UIKit.framework */; };
@@ -14,13 +18,14 @@
 		A674938018C4FC7500EE73CA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A674937F18C4FC7500EE73CA /* main.m */; };
 		A674938418C4FC7500EE73CA /* MRCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A674938318C4FC7500EE73CA /* MRCAppDelegate.m */; };
 		A674938718C4FC7500EE73CA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A674938518C4FC7500EE73CA /* Main.storyboard */; };
-		A674938A18C4FC7500EE73CA /* MRCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A674938918C4FC7500EE73CA /* MRCViewController.m */; };
 		A674938C18C4FC7500EE73CA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A674938B18C4FC7500EE73CA /* Images.xcassets */; };
 		A674939318C4FC7500EE73CA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A674939218C4FC7500EE73CA /* XCTest.framework */; };
 		A674939418C4FC7500EE73CA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A674937318C4FC7500EE73CA /* Foundation.framework */; };
 		A674939518C4FC7500EE73CA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A674937718C4FC7500EE73CA /* UIKit.framework */; };
 		A674939D18C4FC7500EE73CA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A674939B18C4FC7500EE73CA /* InfoPlist.strings */; };
 		A674939F18C4FC7600EE73CA /* WeatherAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A674939E18C4FC7600EE73CA /* WeatherAppTests.m */; };
+		A67493AA18C4FD7600EE73CA /* MRCWeatherAppTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A67493A918C4FD7600EE73CA /* MRCWeatherAppTableViewController.m */; };
+		A67493AB18C4FD7600EE73CA /* MRCWeatherAppTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A67493A918C4FD7600EE73CA /* MRCWeatherAppTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +39,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		A6163B0518C5883B00C58BC5 /* MRCCurrentCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRCCurrentCell.h; sourceTree = "<group>"; };
+		A6163B0618C5883B00C58BC5 /* MRCCurrentCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRCCurrentCell.m; sourceTree = "<group>"; };
+		A6163B0918C5884E00C58BC5 /* MRCForecastCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRCForecastCell.h; sourceTree = "<group>"; };
+		A6163B0A18C5884E00C58BC5 /* MRCForecastCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRCForecastCell.m; sourceTree = "<group>"; };
 		A674937018C4FC7400EE73CA /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A674937318C4FC7500EE73CA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A674937518C4FC7500EE73CA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -45,14 +54,14 @@
 		A674938218C4FC7500EE73CA /* MRCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRCAppDelegate.h; sourceTree = "<group>"; };
 		A674938318C4FC7500EE73CA /* MRCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MRCAppDelegate.m; sourceTree = "<group>"; };
 		A674938618C4FC7500EE73CA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		A674938818C4FC7500EE73CA /* MRCViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRCViewController.h; sourceTree = "<group>"; };
-		A674938918C4FC7500EE73CA /* MRCViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MRCViewController.m; sourceTree = "<group>"; };
 		A674938B18C4FC7500EE73CA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		A674939118C4FC7500EE73CA /* WeatherAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A674939218C4FC7500EE73CA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		A674939A18C4FC7500EE73CA /* WeatherAppTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WeatherAppTests-Info.plist"; sourceTree = "<group>"; };
 		A674939C18C4FC7500EE73CA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A674939E18C4FC7600EE73CA /* WeatherAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WeatherAppTests.m; sourceTree = "<group>"; };
+		A67493A818C4FD7600EE73CA /* MRCWeatherAppTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MRCWeatherAppTableViewController.h; sourceTree = "<group>"; };
+		A67493A918C4FD7600EE73CA /* MRCWeatherAppTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MRCWeatherAppTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,9 +124,13 @@
 				A674938218C4FC7500EE73CA /* MRCAppDelegate.h */,
 				A674938318C4FC7500EE73CA /* MRCAppDelegate.m */,
 				A674938518C4FC7500EE73CA /* Main.storyboard */,
-				A674938818C4FC7500EE73CA /* MRCViewController.h */,
-				A674938918C4FC7500EE73CA /* MRCViewController.m */,
 				A674938B18C4FC7500EE73CA /* Images.xcassets */,
+				A67493A818C4FD7600EE73CA /* MRCWeatherAppTableViewController.h */,
+				A67493A918C4FD7600EE73CA /* MRCWeatherAppTableViewController.m */,
+				A6163B0518C5883B00C58BC5 /* MRCCurrentCell.h */,
+				A6163B0618C5883B00C58BC5 /* MRCCurrentCell.m */,
+				A6163B0918C5884E00C58BC5 /* MRCForecastCell.h */,
+				A6163B0A18C5884E00C58BC5 /* MRCForecastCell.m */,
 				A674937A18C4FC7500EE73CA /* Supporting Files */,
 			);
 			path = WeatherApp;
@@ -250,9 +263,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6163B0718C5883B00C58BC5 /* MRCCurrentCell.m in Sources */,
+				A67493AA18C4FD7600EE73CA /* MRCWeatherAppTableViewController.m in Sources */,
 				A674938018C4FC7500EE73CA /* main.m in Sources */,
 				A674938418C4FC7500EE73CA /* MRCAppDelegate.m in Sources */,
-				A674938A18C4FC7500EE73CA /* MRCViewController.m in Sources */,
+				A6163B0B18C5884E00C58BC5 /* MRCForecastCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -261,6 +276,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A674939F18C4FC7600EE73CA /* WeatherAppTests.m in Sources */,
+				A6163B0C18C5884E00C58BC5 /* MRCForecastCell.m in Sources */,
+				A6163B0818C5883B00C58BC5 /* MRCCurrentCell.m in Sources */,
+				A67493AB18C4FD7600EE73CA /* MRCWeatherAppTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,6 +479,7 @@
 				A67493A418C4FC7600EE73CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A67493A518C4FC7600EE73CA /* Build configuration list for PBXNativeTarget "WeatherAppTests" */ = {
 			isa = XCConfigurationList;
@@ -469,6 +488,7 @@
 				A67493A718C4FC7600EE73CA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
