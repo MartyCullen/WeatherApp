@@ -105,6 +105,11 @@
     
     self.isFirstUpdate = YES;
     [self.locationManager startUpdatingLocation];
+    
+    HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    HUD.dimBackground = YES;
+    HUD.delegate = self;
+
 }
 
 #pragma mark - Comm Initiators
@@ -125,9 +130,6 @@
             // Create url connection and fire request
             self.todayConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
             
-            HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            HUD.dimBackground = YES;
-            HUD.delegate = self;
         }
     }
 }
@@ -153,7 +155,7 @@
                               JSONObjectWithData:self.todayData
                               options:kNilOptions
                               error:&error];
-        NSLog(@"TODAY Json \n %@", json );
+        //NSLog(@"TODAY Json \n %@", json );
         
         if ( error )
         {
@@ -170,6 +172,9 @@
             
             [self requestForecastDataForLocationId:locId];
         }
+        
+        self.todayConnection = nil;
+        self.todayData = nil;
     }
 }
 
@@ -212,6 +217,10 @@
             
             [self.tableView reloadData];
         }
+        
+        self.forecastConnection = nil;
+        self.forecastData = nil;
+
     }
 }
 
@@ -240,6 +249,7 @@
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
     [self errorHandler:error forArea:@"Location"];
+    [HUD hide:YES];
 }
 
 #pragma mark - NSURLConnectionDelegate
