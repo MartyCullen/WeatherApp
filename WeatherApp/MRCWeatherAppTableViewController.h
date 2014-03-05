@@ -10,14 +10,19 @@
 #import "MRCCurrentCell.h"
 #import "MRCForecastCell.h"
 #import "MBProgressHUD.h"
+
+#define ERROR_AREA_LOCATION @"location"
+
 @import CoreLocation;
 
 @interface MRCWeatherAppTableViewController : UITableViewController <NSURLConnectionDelegate, MBProgressHUDDelegate, CLLocationManagerDelegate>
 {
 	MBProgressHUD *HUD;
     
-	long long expectedLength;
-	long long currentLength;
+	//long long expectedLength;
+	//long long currentLength;
+    
+    BOOL _gotError;
 }
 @property (nonatomic, strong) NSURLConnection* todayConnection;
 @property (nonatomic, strong) NSMutableData* todayData;

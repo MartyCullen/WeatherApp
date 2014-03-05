@@ -14,23 +14,11 @@
 
 @implementation MRCWeatherAppTableViewController
 
-//- (id)initWithStyle:(UITableViewStyle)style
-//{
-//    self = [super initWithStyle:style];
-//    if (self) {
-//        // Custom initialization
-//
-//    }
-//    return self;
-//}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [self findCurrentLocation];
-    
-    self.tableView.separatorColor = [self grayDarkest];
+    [self startEvent];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -46,11 +34,6 @@
 }
 
 #pragma mark - Utils
-- (UIColor*) grayDarkest
-{
-    return [UIColor colorWithRed:23/255 green:23/255 blue:23/255 alpha:1.0];
-}
-
 - (NSDate*) safeAddDayToDate:(NSDate*)inDate
 {
     // set up date components to add ONE day
@@ -85,7 +68,63 @@
 
 - (void) errorHandler:(NSError*)error forArea:(NSString*)area
 {
+    // TODO: Enhance Error Handler
     NSLog(@"%@ Error:%@", area, error);
+    _gotError = YES;
+    [self eventManager];
+    
+    if ( [area isEqualToString:ERROR_AREA_LOCATION] && kCLErrorDomain == error.domain && 0 == error.code  )
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Location Services Error" message:@"Unable to use location services." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+    }
+    else
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Misc Error" message:error.domain delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+    }
+}
+
+
+- (void) startEvent
+{
+    HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    HUD.dimBackground = YES;
+    HUD.delegate = self;
+
+    [self findCurrentLocation];
+
+}
+
+- (void) eventManager
+{
+    // TODO: Look into Reactive Cocoa instead of daisy chaining lookups
+    // http://www.raywenderlich.com/55386/ios-7-best-practices-part-2
+    
+    // TODO: Maybe add timer to timeout HUD and fail?
+    
+    if ( _gotError )
+    {
+        [HUD hide:YES];
+        return;
+    }
+    NSLog(@"No Error");
+    
+    if ( !self.currentTempString )
+        return;
+    NSLog(@"Got Current");
+    
+    if ( !self.forecastCellStrings )
+        return;
+    NSLog(@"Got Forecast");
+    
+    if ( !self.currentCityString )
+        return;
+    NSLog(@"Got City");
+    
+    // If we have everything, reload and remove the HUD
+    [self.tableView reloadData];
+    [HUD hide:YES];
 }
 
 #pragma mark - Core Location
@@ -105,12 +144,32 @@
     
     self.isFirstUpdate = YES;
     [self.locationManager startUpdatingLocation];
-    
-    HUD = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    HUD.dimBackground = YES;
-    HUD.delegate = self;
-
 }
+
+- (void) reverseGeocode
+{
+    if ( self.currentLocation )
+    {
+        CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+        
+        [geocoder reverseGeocodeLocation:self.currentLocation completionHandler:^(NSArray *placemarks, NSError *error) {
+            if (error){
+                [self errorHandler:error forArea:@"GeoCoder"];
+                return;
+            }
+            //NSLog(@"Received placemarks: %@", placemarks);
+            
+            //[self displayPlacemarks:placemarks];
+            CLPlacemark* placemark = [placemarks lastObject];
+            self.currentCityString = [NSString stringWithFormat:@"%@, %@", placemark.locality, placemark.administrativeArea];
+            //NSLog(@"City: %@", self.currentCityString);
+            
+            // Notify Event Manager, see if we have everything
+            [self eventManager];
+        }];
+    }
+}
+
 
 #pragma mark - Comm Initiators
 - (void) requestTodayData
@@ -129,7 +188,6 @@
             
             // Create url connection and fire request
             self.todayConnection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-            
         }
     }
 }
@@ -163,7 +221,7 @@
         }
         else
         {
-            self.currentCityString = [json objectForKey:@"name"];
+            //self.currentCityString = [json objectForKey:@"name"];
             NSString* locId = [json objectForKey:@"id"];
             NSDictionary* main = [json objectForKey:@"main"];
             NSNumber* currentTemp = [main objectForKey:@"temp"];
@@ -171,6 +229,9 @@
             //NSLog(@"City %@   Main %@  temp %@  id %@", self.currentCityString, main, self.currentTempString, locId );
             
             [self requestForecastDataForLocationId:locId];
+            
+            // Notify Event Manager, see if we have everything
+            [self eventManager];
         }
         
         self.todayConnection = nil;
@@ -215,12 +276,13 @@
                 [self.forecastCellStrings addObject:forecast];
             }
             
-            [self.tableView reloadData];
+            // Notify Event Manager, see if we have everything
+            [self eventManager];
         }
         
         self.forecastConnection = nil;
         self.forecastData = nil;
-
+        //NSLog(@"Got All Weather");
     }
 }
 
@@ -239,24 +301,29 @@
     
     if (location.horizontalAccuracy > 0) {
         self.currentLocation = location;
-        NSLog(@"Current Location Found: %@", location);
+        //NSLog(@"Current Location Found: %@", location);
+        // Shut down the GPS search
         [self.locationManager stopUpdatingLocation];
-        [self requestTodayData];
         
+        // Lookup the state for this location
+        [self reverseGeocode];
+        
+        // Lookup the current weather for this location
+        [self requestTodayData];
     }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
 {
-    [self errorHandler:error forArea:@"Location"];
-    [HUD hide:YES];
+    [self errorHandler:error forArea:ERROR_AREA_LOCATION];
+    //[HUD hide:YES];
 }
 
 #pragma mark - NSURLConnectionDelegate
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     
-	expectedLength = MAX([response expectedContentLength], 1);
-	currentLength = 0;
+	//expectedLength = MAX([response expectedContentLength], 1);
+	//currentLength = 0;
     
     if (connection == self.todayConnection )
     {
@@ -267,7 +334,7 @@
         self.forecastData = [[NSMutableData alloc] init];
     }
     
-    HUD.mode = MBProgressHUDModeDeterminate;
+    //HUD.mode = MBProgressHUDModeDeterminate;
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
@@ -280,8 +347,8 @@
     {
         [self.forecastData appendData:data];
     }
-    currentLength += [data length];
-	HUD.progress = currentLength / (float)expectedLength;
+    //currentLength += [data length];
+	//HUD.progress = currentLength / (float)expectedLength;
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection
@@ -302,16 +369,14 @@
     {
         [self processForecastData];
     }
-	[HUD hide:YES];
-
-    
+	//[HUD hide:YES];
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     // The request has failed for some reason!
     // Check the error var
     [self errorHandler:error forArea:@"Connection"];
-    [HUD hide:YES];
+    //[HUD hide:YES];
 
 }
 

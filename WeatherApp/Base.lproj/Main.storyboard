@@ -8,14 +8,15 @@
         <scene sceneID="kc9-cZ-6MO">
             <objects>
                 <tableViewController id="Fc2-Bz-0z1" customClass="MRCWeatherAppTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="75" sectionHeaderHeight="162" sectionFooterHeight="1" id="don-Qb-cam">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="don-Qb-cam">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="separatorColor" red="0.090196078431372548" green="0.090196078431372548" blue="0.090196078431372548" alpha="1" colorSpace="calibratedRGB"/>
                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="current" rowHeight="162" id="bRu-WZ-lcV" customClass="MRCCurrentCell">
-                                <rect key="frame" x="0.0" y="162" width="320" height="162"/>
+                                <rect key="frame" x="0.0" y="22" width="320" height="162"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bRu-WZ-lcV" id="Afu-QX-59l">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="161"/>
@@ -41,7 +42,7 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="future" rowHeight="75" id="ScH-O4-6mv" customClass="MRCForecastCell">
-                                <rect key="frame" x="0.0" y="324" width="320" height="75"/>
+                                <rect key="frame" x="0.0" y="184" width="320" height="75"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ScH-O4-6mv" id="54R-p7-V25">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="74"/>
@@ -76,7 +77,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kSM-TA-NGa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="543" y="223"/>
+            <point key="canvasLocation" x="-66" y="201"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
